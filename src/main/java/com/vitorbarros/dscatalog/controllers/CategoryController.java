@@ -1,10 +1,9 @@
 package com.vitorbarros.dscatalog.controllers;
 
 import com.vitorbarros.dscatalog.models.Category;
+import com.vitorbarros.dscatalog.service.CategoryService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,16 +13,23 @@ import java.util.List;
 @RequestMapping(value = "/categories")
 public class CategoryController {
 
+    private CategoryService categoryService;
+
+    public CategoryController(CategoryService categoryService){
+        this.categoryService = categoryService;
+    }
+
+
     @GetMapping
     public ResponseEntity <List<Category>> findById(){
+       return categoryService.findAll();
+    }
 
-        List<Category> list = new ArrayList<>();
 
-        list.add(new Category(1L, "Eletronicos"));
-        list.add(new Category(2L, "Cozinha"));
 
-        return ResponseEntity.ok(list);
-
+    @PostMapping
+    public  ResponseEntity<Category> save(@RequestBody Category category){
+        return categoryService.save(category);
     }
 
 }

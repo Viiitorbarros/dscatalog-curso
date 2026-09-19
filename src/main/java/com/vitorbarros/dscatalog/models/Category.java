@@ -1,16 +1,23 @@
 package com.vitorbarros.dscatalog.models;
 
 
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+
+
+@Entity
 @Getter
 @Setter
 @EqualsAndHashCode
 public class Category {
 
+    @Id
+    @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "tb_category")
     private String name;
 
     //Constructor vazio
