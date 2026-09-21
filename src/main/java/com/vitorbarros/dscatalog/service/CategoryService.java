@@ -4,6 +4,7 @@ import com.vitorbarros.dscatalog.models.Category;
 import com.vitorbarros.dscatalog.repository.CategoryRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-
+    @Transactional(readOnly = true)
    public ResponseEntity <List<Category>> findAll(){
          List<Category> listCategories = categoryRepository.findAll();
          return ResponseEntity.ok(listCategories);
