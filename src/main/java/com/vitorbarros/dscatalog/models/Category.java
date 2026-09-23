@@ -12,12 +12,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode
+@Table(name = "tb_category")
 public class Category {
 
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "tb_category")
+
     private String name;
 
     //Constructor vazio
