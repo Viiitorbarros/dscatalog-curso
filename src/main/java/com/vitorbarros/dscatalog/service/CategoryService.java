@@ -39,7 +39,7 @@ public class CategoryService {
    public ResponseEntity<CategoryDTO> findById(Long id){
 
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoria nao encontrada"));
+                .orElseThrow(() -> new RuntimeException("Entidade Nao Encontrada "));
 
         CategoryDTO categoryDTO = new CategoryDTO(category);
 
@@ -50,7 +50,7 @@ public class CategoryService {
    public ResponseEntity <Category> save (Category category){
 
         if(category.getName().isBlank()){
-           throw new RuntimeException("Esta vazio o nome ");
+           throw new RuntimeException("Nome Vazio");
         }
 
        return ResponseEntity.ok(categoryRepository.save(category));
