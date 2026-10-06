@@ -7,7 +7,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @Setter
 @Getter
-public class StandartExeption {
+public class StandardExeption {
 
     private Instant timestamp;
     private Integer status;

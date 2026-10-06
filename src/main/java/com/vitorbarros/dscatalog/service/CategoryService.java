@@ -1,5 +1,7 @@
 package com.vitorbarros.dscatalog.service;
 
+import com.vitorbarros.dscatalog.exeptions.EntityNotFound;
+import com.vitorbarros.dscatalog.exeptions.InvalidResourceException;
 import com.vitorbarros.dscatalog.models.Category;
 import com.vitorbarros.dscatalog.repository.CategoryRepository;
 import com.vitorbarros.dscatalog.dto.CategoryDTO;
@@ -39,7 +41,7 @@ public class CategoryService {
    public ResponseEntity<CategoryDTO> findById(Long id){
 
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Entidade Nao Encontrada "));
+                .orElseThrow(() -> new EntityNotFound("Entidade Nao Encontrada "));
 
         CategoryDTO categoryDTO = new CategoryDTO(category);
 
@@ -50,7 +52,7 @@ public class CategoryService {
    public ResponseEntity <Category> save (Category category){
 
         if(category.getName().isBlank()){
-           throw new RuntimeException("Nome Vazio");
+           throw new InvalidResourceException("Error ao Salvar Entidade");
         }
 
        return ResponseEntity.ok(categoryRepository.save(category));
