@@ -5,7 +5,9 @@ import com.vitorbarros.dscatalog.service.CategoryService;
 import com.vitorbarros.dscatalog.dto.CategoryDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 
@@ -36,8 +38,19 @@ public class CategoryController {
 
 
     @PostMapping
-    public  ResponseEntity<Category> save(@RequestBody Category category){
-        return categoryService.save(category);
+    public  ResponseEntity<CategoryDTO> save(@RequestBody CategoryDTO categoryDTO){
+
+        categoryDTO = categoryService.save(categoryDTO);
+
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(categoryDTO.getId())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(categoryDTO);
+
+
     }
 
 }

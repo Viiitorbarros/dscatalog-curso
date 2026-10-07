@@ -49,13 +49,21 @@ public class CategoryService {
 
    }
 
-   public ResponseEntity <Category> save (Category category){
+   @Transactional
+   public ResponseEntity <CategoryDTO> save (CategoryDTO categoryDTO){
 
-        if(category.getName().isBlank()){
+        if(categoryDTO.getName().isBlank()){
            throw new InvalidResourceException("Error ao Salvar Entidade");
         }
 
-       return ResponseEntity.ok(categoryRepository.save(category));
+        Category category = new Category();
+        category.setName(categoryDTO.getName());
+        categoryRepository.save(category);
+
+        CategoryDTO dto = new CategoryDTO(category);
+
+       return ResponseEntity.ok().body(dto);
+
    }
 
 
