@@ -40,7 +40,7 @@ public class CategoryController {
     @PostMapping
     public  ResponseEntity<CategoryDTO> save(@RequestBody CategoryDTO categoryDTO){
 
-        categoryDTO = categoryService.save(categoryDTO);
+        categoryDTO = categoryService.save(categoryDTO).getBody();
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -50,7 +50,18 @@ public class CategoryController {
 
         return ResponseEntity.created(uri).body(categoryDTO);
 
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<CategoryDTO> update(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO){
+
+        categoryDTO = categoryService.update(id,categoryDTO);
+
+        return ResponseEntity.ok().body(categoryDTO);
 
     }
+
+
+
 
 }

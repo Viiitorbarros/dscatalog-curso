@@ -1,16 +1,16 @@
 package com.vitorbarros.dscatalog.service;
 
-import com.vitorbarros.dscatalog.exeptions.EntityNotFound;
-import com.vitorbarros.dscatalog.exeptions.InvalidResourceException;
+import com.vitorbarros.dscatalog.exeptions.ResourceNotFoundException;
+
 import com.vitorbarros.dscatalog.models.Category;
 import com.vitorbarros.dscatalog.repository.CategoryRepository;
 import com.vitorbarros.dscatalog.dto.CategoryDTO;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -41,7 +41,7 @@ public class CategoryService {
    public ResponseEntity<CategoryDTO> findById(Long id){
 
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFound("Entidade Nao Encontrada "));
+                .orElseThrow(() -> new ResourceNotFoundException("Entidade Nao Encontrada "));
 
         CategoryDTO categoryDTO = new CategoryDTO(category);
 
@@ -52,9 +52,6 @@ public class CategoryService {
    @Transactional
    public ResponseEntity <CategoryDTO> save (CategoryDTO categoryDTO){
 
-        if(categoryDTO.getName().isBlank()){
-           throw new InvalidResourceException("Error ao Salvar Entidade");
-        }
 
         Category category = new Category();
         category.setName(categoryDTO.getName());
@@ -63,6 +60,24 @@ public class CategoryService {
         CategoryDTO dto = new CategoryDTO(category);
 
        return ResponseEntity.ok().body(dto);
+
+   }
+
+
+
+   @Transactional
+   public  CategoryDTO update(Long id, CategoryDTO categoryDTO){
+
+        try {
+            Category category = categoryRepository.getReferenceById(id);
+            category.setName(categoryDTO.getName());
+            categoryRepository.save(category);
+            return new CategoryDTO(category);
+        }catch (EntityNotFoundException e){
+
+            throw new ResourceNotFoundException(id + "Não Encontrado");
+        }
+
 
    }
 

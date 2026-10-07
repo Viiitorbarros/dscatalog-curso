@@ -12,8 +12,8 @@ import java.time.Instant;
 @ControllerAdvice
 public class ResourceExeptionHendler {
 
-   @ExceptionHandler(EntityNotFound.class)
-   public ResponseEntity<StandardExeption> entityNotFound(EntityNotFound e , HttpServletRequest request){
+   @ExceptionHandler(ResourceNotFoundException.class)
+   public ResponseEntity<StandardExeption> entityNotFound(ResourceNotFoundException e , HttpServletRequest request){
 
     StandardExeption err = new StandardExeption();
 
@@ -27,20 +27,6 @@ public class ResourceExeptionHendler {
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
    }
 
-   @ExceptionHandler(InvalidResourceException.class)
-   public ResponseEntity<StandardExeption> invalidResource(InvalidResourceException e , HttpServletRequest request){
 
-       StandardExeption err = new StandardExeption();
-
-       err.setTimestamp(Instant.now());
-       err.setStatus(HttpStatus.BAD_REQUEST.value());
-       err.setError("Error ao salvar");
-       err.setMenssagem(e.getMessage());
-       err.setPath(request.getRequestURI());
-
-
-       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
-
-   }
 
  }
