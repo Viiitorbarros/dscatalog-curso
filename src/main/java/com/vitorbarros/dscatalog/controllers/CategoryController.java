@@ -3,6 +3,9 @@ package com.vitorbarros.dscatalog.controllers;
 import com.vitorbarros.dscatalog.models.Category;
 import com.vitorbarros.dscatalog.service.CategoryService;
 import com.vitorbarros.dscatalog.dto.CategoryDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -23,9 +26,17 @@ public class CategoryController {
 
 
     @GetMapping
-    public ResponseEntity <List<CategoryDTO>> findById(){
+    public ResponseEntity <Page<CategoryDTO>> findAllPaged(
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
+            @RequestParam(value = "direction", defaultValue = "DESC") String direction,
+            @RequestParam(value = "orderBy", defaultValue = "name") String orderBy
 
-        return categoryService.findAll();
+    ){
+        PageRequest pageRequest = PageRequest.of(page,linesPerPage, Sort.Direction.valueOf(direction),orderBy);
+
+
+        return categoryService.findAllPaged(pageRequest);
 
     }
 

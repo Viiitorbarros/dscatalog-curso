@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Instant;
 
 
 @Entity
@@ -21,6 +22,13 @@ public class Category {
 
     private String name;
 
+
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+    private Instant createdAt;
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+    private Instant updateAt;
+
+
     //Constructor vazio
     public Category(){
     }
@@ -32,5 +40,16 @@ public class Category {
 
     //GETTERs e SETTERs criados com lombok
     //Equals And HashCode Criados com lombok
+
+    @PrePersist
+    public void prePersist(){
+        createdAt = Instant.now();
+    }
+    @PreUpdate
+    public void preUpdate(){
+        updateAt = Instant.now();
+    }
+
+
 
 }

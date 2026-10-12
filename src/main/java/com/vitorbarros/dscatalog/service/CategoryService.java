@@ -7,7 +7,10 @@ import com.vitorbarros.dscatalog.models.Category;
 import com.vitorbarros.dscatalog.repository.CategoryRepository;
 import com.vitorbarros.dscatalog.dto.CategoryDTO;
 import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,13 +31,11 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-   public ResponseEntity <List<CategoryDTO>> findAll(){
+   public ResponseEntity <Page<CategoryDTO>> findAllPaged(Pageable pageable){
 
-        List<Category> categories = categoryRepository.findAll();
+        Page<Category> categoriesPeged = categoryRepository.findAll(pageable);
 
-        List<CategoryDTO> categoriesDto = categories.stream()
-                .map(x-> new CategoryDTO(x))
-                .toList();
+        Page<CategoryDTO> categoriesDto = categoriesPeged.map(x->new CategoryDTO(x));
 
         return ResponseEntity.ok(categoriesDto);
 

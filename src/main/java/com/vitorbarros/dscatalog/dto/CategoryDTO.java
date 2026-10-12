@@ -2,7 +2,12 @@ package com.vitorbarros.dscatalog.dto;
 
 
 import com.vitorbarros.dscatalog.models.Category;
+import jakarta.persistence.Column;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.EqualsAndHashCode;
+
+import java.time.Instant;
 
 @EqualsAndHashCode
 public class CategoryDTO {
@@ -41,6 +46,7 @@ public class CategoryDTO {
     }
 
 
+
     public void setId(Long id){
         this.id = id;
     }
@@ -48,7 +54,6 @@ public class CategoryDTO {
     public void setName(String name){
         this.name = name;
     }
-
 
 
 
