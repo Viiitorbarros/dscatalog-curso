@@ -1,11 +1,13 @@
 package com.vitorbarros.dscatalog.service;
 
+import com.vitorbarros.dscatalog.exeptions.DataBaseException;
 import com.vitorbarros.dscatalog.exeptions.ResourceNotFoundException;
 
 import com.vitorbarros.dscatalog.models.Category;
 import com.vitorbarros.dscatalog.repository.CategoryRepository;
 import com.vitorbarros.dscatalog.dto.CategoryDTO;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,7 +66,6 @@ public class CategoryService {
    }
 
 
-
    @Transactional
    public  CategoryDTO update(Long id, CategoryDTO categoryDTO){
 
@@ -77,7 +78,19 @@ public class CategoryService {
 
             throw new ResourceNotFoundException(id + "Não Encontrado");
         }
+   }
 
+
+   public void delete(Long id){
+
+        if (!categoryRepository.existsById(id)){
+            throw new ResourceNotFoundException("Id não Encontrado");
+        }
+        try {
+            categoryRepository.deleteById(id);
+        }catch (DataIntegrityViolationException e){
+            throw new DataBaseException("Falha na integridade");
+        }
 
    }
 
