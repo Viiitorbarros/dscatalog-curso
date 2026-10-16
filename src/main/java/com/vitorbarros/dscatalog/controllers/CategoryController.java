@@ -5,6 +5,7 @@ import com.vitorbarros.dscatalog.service.CategoryService;
 import com.vitorbarros.dscatalog.dto.CategoryDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class CategoryController {
             @RequestParam(value = "orderBy", defaultValue = "name") String orderBy
 
     ){
-        PageRequest pageRequest = PageRequest.of(page,linesPerPage, Sort.Direction.valueOf(direction),orderBy);
+        Pageable pageRequest = PageRequest.of(page,linesPerPage, Sort.Direction.valueOf(direction),orderBy);
 
 
         return categoryService.findAllPaged(pageRequest);
