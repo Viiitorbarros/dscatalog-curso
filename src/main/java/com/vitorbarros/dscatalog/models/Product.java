@@ -23,6 +23,7 @@ public class Product {
     private String imgUrl;
 
 
+
     private Instant date;
 
     @ManyToMany
