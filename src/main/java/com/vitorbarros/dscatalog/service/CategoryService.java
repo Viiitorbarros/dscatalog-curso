@@ -31,9 +31,9 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-   public ResponseEntity <Page<CategoryDTO>> findAllPaged(Pageable pageRequest){
+   public ResponseEntity <Page<CategoryDTO>> findAllPaged(Pageable pageable){
 
-        Page<Category> categoriesPeged = categoryRepository.findAll(pageRequest);
+        Page<Category> categoriesPeged = categoryRepository.findAll(pageable);
 
         Page<CategoryDTO> categoriesDto = categoriesPeged.map(x->new CategoryDTO(x));
 

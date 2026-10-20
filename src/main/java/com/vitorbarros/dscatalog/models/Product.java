@@ -95,6 +95,9 @@ public class Product {
         this.imgUrl = imgUrl;
     }
 
+    public void setDate(Instant date) {
+        this.date = date;
+    }
 
     @Override
     public boolean equals(Object o) {
