@@ -69,13 +69,13 @@ public class ProductService {
 
 
    @Transactional
-   public  ProductDTO update(Long id, ProductDTO ProductDTO){
+   public  ProductDTO update(Long id, ProductDTO productDTO){
 
         try {
-            Product Product = ProductRepository.getReferenceById(id);
-            Product.setName(ProductDTO.getName());
-            ProductRepository.save(Product);
-            return new ProductDTO(Product);
+            Product entity = ProductRepository.getReferenceById(id);
+            copyDtotoEnity(productDTO, entity);;
+            ProductRepository.save(entity);
+            return new ProductDTO(entity);
         }catch (EntityNotFoundException e){
 
             throw new ResourceNotFoundException(id + "Não Encontrado");
