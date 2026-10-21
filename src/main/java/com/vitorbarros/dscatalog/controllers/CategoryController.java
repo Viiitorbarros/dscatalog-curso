@@ -27,17 +27,9 @@ public class CategoryController {
 
 
     @GetMapping
-    public ResponseEntity <Page<CategoryDTO>> findAllPaged(
-            @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
-            @RequestParam(value = "direction", defaultValue = "DESC") String direction,
-            @RequestParam(value = "orderBy", defaultValue = "name") String orderBy
+    public ResponseEntity <Page<CategoryDTO>> findAllPaged(Pageable pageable){
 
-    ){
-        Pageable pageRequest = PageRequest.of(page,linesPerPage, Sort.Direction.valueOf(direction),orderBy);
-
-
-        return categoryService.findAllPaged(pageRequest);
+        return categoryService.findAllPaged(pageable);
 
     }
 

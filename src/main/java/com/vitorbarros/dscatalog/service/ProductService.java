@@ -30,10 +30,11 @@ public class ProductService {
         this.categoryRepository = categoryRepository;
     }
 
-    @Transactional(readOnly = true)
-   public ResponseEntity <Page<ProductDTO>> findAllPaged(Pageable pageRequest){
 
-        Page<Product> categoriesPeged = ProductRepository.findAll(pageRequest);
+    @Transactional(readOnly = true)
+   public ResponseEntity <Page<ProductDTO>> findAllPaged(Pageable pageable){
+
+        Page<Product> categoriesPeged = ProductRepository.findAll(pageable);
 
         Page<ProductDTO> categoriesDto = categoriesPeged.map(x->new ProductDTO(x));
 

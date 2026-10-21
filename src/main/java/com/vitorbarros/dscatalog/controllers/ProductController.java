@@ -25,17 +25,9 @@ public class ProductController {
 
 
     @GetMapping
-    public ResponseEntity <Page<ProductDTO>> findAllPaged(
-            @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
-            @RequestParam(value = "direction", defaultValue = "DESC") String direction,
-            @RequestParam(value = "orderBy", defaultValue = "name") String orderBy
+    public ResponseEntity <Page<ProductDTO>> findAllPaged(Pageable pageable){
 
-    ){
-        Pageable pageRequest = PageRequest.of(page,linesPerPage, Sort.Direction.valueOf(direction),orderBy);
-
-
-        return productService.findAllPaged(pageRequest);
+        return productService.findAllPaged(pageable);
 
     }
 
@@ -65,7 +57,7 @@ public class ProductController {
     @PutMapping(value = "/{id}")
     public ResponseEntity<ProductDTO> update(@PathVariable Long id, @RequestBody ProductDTO productDTO){
 
-        ProductDTO = productService.update(id,productDTO);
+        productDTO = productService.update(id,productDTO);
 
         return ResponseEntity.ok().body(productDTO);
 
