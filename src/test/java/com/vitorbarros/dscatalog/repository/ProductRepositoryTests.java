@@ -20,6 +20,8 @@ public class ProductRepositoryTests {
 
 
 
+
+
     @Test
     public void saveDeveriaSalvarDadosComAutoIncrementQuandoIdNull(){
 
@@ -50,6 +52,31 @@ public class ProductRepositoryTests {
 
     }
 
-    
+    @Test
+    public void  findByIdDeveriaRetornarUmOptionalNaoVazioQuandoIdExistir(){
+
+        Long idExistete = 1L;
+
+        Optional<Product> product = repository.findById(idExistete);
+
+        Assertions.assertTrue(product.isPresent());
+
+
+
+    }
+
+    @Test
+    public void  findByIdDeveriaRetornarUmOptionalVazioQuandoIdNaoExistir(){
+
+        Long idExistete = 1000L;
+
+        Optional<Product> product = repository.findById(idExistete);
+
+        Assertions.assertTrue(product.isEmpty());
+
+    }
+
+
+
 
 }
