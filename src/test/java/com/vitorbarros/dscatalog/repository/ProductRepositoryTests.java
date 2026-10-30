@@ -1,6 +1,8 @@
 package com.vitorbarros.dscatalog.repository;
 
 
+import com.vitorbarros.dscatalog.Factory.Factory;
+import com.vitorbarros.dscatalog.exeptions.ResourceNotFoundException;
 import com.vitorbarros.dscatalog.models.Product;
 import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.Assertions;
@@ -19,6 +21,22 @@ public class ProductRepositoryTests {
 
 
     @Test
+    public void saveDeveriaSalvarDadosComAutoIncrementQuandoIdNull(){
+
+
+
+        Product product = Factory.createProduct();
+        product.setId(null);
+        product = repository.save(product);
+
+        Assertions.assertNotNull(product.getId());
+        Assertions.assertEquals(26, product.getId());
+
+
+    }
+
+
+    @Test
     public void  deleteDeveriaDeletarProdutoQuandoIdExistir(){
 
         Long idExistete = 1L;
@@ -32,5 +50,6 @@ public class ProductRepositoryTests {
 
     }
 
+    
 
 }
