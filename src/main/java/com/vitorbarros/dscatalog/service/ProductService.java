@@ -2,7 +2,7 @@ package com.vitorbarros.dscatalog.service;
 
 import com.vitorbarros.dscatalog.dto.CategoryDTO;
 import com.vitorbarros.dscatalog.dto.ProductDTO;
-import com.vitorbarros.dscatalog.exeptions.DataBaseException;
+import com.vitorbarros.dscatalog.exeptions.DatabaseException;
 import com.vitorbarros.dscatalog.exeptions.ResourceNotFoundException;
 import com.vitorbarros.dscatalog.models.Category;
 import com.vitorbarros.dscatalog.models.Product;
@@ -21,12 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
 
 
-    private ProductRepository ProductRepository;
+    private ProductRepository productRepository;
 
     private CategoryRepository categoryRepository;
 
     public ProductService(ProductRepository ProductRepository,CategoryRepository categoryRepository ){
-        this.ProductRepository = ProductRepository;
+        this.productRepository = ProductRepository;
         this.categoryRepository = categoryRepository;
     }
 
@@ -34,7 +34,7 @@ public class ProductService {
     @Transactional(readOnly = true)
    public ResponseEntity <Page<ProductDTO>> findAllPaged(Pageable pageable){
 
-        Page<Product> categoriesPeged = ProductRepository.findAll(pageable);
+        Page<Product> categoriesPeged = productRepository.findAll(pageable);
 
         Page<ProductDTO> categoriesDto = categoriesPeged.map(x->new ProductDTO(x));
 
@@ -45,7 +45,7 @@ public class ProductService {
    @Transactional(readOnly = true)
    public ResponseEntity<ProductDTO> findById(Long id){
 
-        Product Product = ProductRepository.findById(id)
+        Product Product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Entidade Nao Encontrada "));
 
         ProductDTO productDTO = new ProductDTO(Product, Product.getCategories());
@@ -60,7 +60,7 @@ public class ProductService {
 
         Product entity = new Product();
         copyDtotoEnity(productDTO, entity);
-        ProductRepository.save(entity);
+        productRepository.save(entity);
 
         ProductDTO dto = new ProductDTO(entity);
 
@@ -73,9 +73,9 @@ public class ProductService {
    public  ProductDTO update(Long id, ProductDTO productDTO){
 
         try {
-            Product entity = ProductRepository.getReferenceById(id);
+            Product entity = productRepository.getReferenceById(id);
             copyDtotoEnity(productDTO, entity);;
-            ProductRepository.save(entity);
+            productRepository.save(entity);
             return new ProductDTO(entity);
         }catch (EntityNotFoundException e){
 
@@ -86,13 +86,13 @@ public class ProductService {
 
    public void delete(Long id){
 
-        if (!ProductRepository.existsById(id)){
+        if (!productRepository.existsById(id)){
             throw new ResourceNotFoundException("Id não Encontrado");
         }
         try {
-            ProductRepository.deleteById(id);
+            productRepository.deleteById(id);
         }catch (DataIntegrityViolationException e){
-            throw new DataBaseException("Falha na integridade");
+            throw new DatabaseException("Falha na integridade");
         }
 
    }

@@ -1,6 +1,6 @@
 package com.vitorbarros.dscatalog.service;
 
-import com.vitorbarros.dscatalog.exeptions.DataBaseException;
+import com.vitorbarros.dscatalog.exeptions.DatabaseException;
 import com.vitorbarros.dscatalog.exeptions.ResourceNotFoundException;
 
 import com.vitorbarros.dscatalog.models.Category;
@@ -14,8 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 
 @Service
@@ -90,7 +88,7 @@ public class CategoryService {
         try {
             categoryRepository.deleteById(id);
         }catch (DataIntegrityViolationException e){
-            throw new DataBaseException("Falha na integridade");
+            throw new DatabaseException("Falha na integridade");
         }
 
    }

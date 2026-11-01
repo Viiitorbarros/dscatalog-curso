@@ -2,7 +2,6 @@ package com.vitorbarros.dscatalog.exeptions;
 
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -29,8 +28,8 @@ public class ResourceExeptionHendler {
    }
 
 
-    @ExceptionHandler(DataBaseException.class)
-    public ResponseEntity<StandardExeption> databaseException(DataBaseException e , HttpServletRequest request){
+    @ExceptionHandler(DatabaseException.class)
+    public ResponseEntity<StandardExeption> databaseException(DatabaseException e , HttpServletRequest request){
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
         StandardExeption err = new StandardExeption();
