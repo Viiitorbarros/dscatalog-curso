@@ -34,11 +34,11 @@ public class ProductService {
     @Transactional(readOnly = true)
    public ResponseEntity <Page<ProductDTO>> findAllPaged(Pageable pageable){
 
-        Page<Product> categoriesPeged = productRepository.findAll(pageable);
+        Page<Product> productsPeged = productRepository.findAll(pageable);
 
-        Page<ProductDTO> categoriesDto = categoriesPeged.map(x->new ProductDTO(x));
+        Page<ProductDTO> productsDto = productsPeged.map(x->new ProductDTO(x));
 
-        return ResponseEntity.ok(categoriesDto);
+        return ResponseEntity.ok(productsDto);
 
    }
 
