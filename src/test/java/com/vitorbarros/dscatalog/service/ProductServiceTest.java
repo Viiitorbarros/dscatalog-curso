@@ -8,6 +8,7 @@ import com.vitorbarros.dscatalog.exeptions.ResourceNotFoundException;
 import com.vitorbarros.dscatalog.models.Product;
 import com.vitorbarros.dscatalog.repository.CategoryRepository;
 import com.vitorbarros.dscatalog.repository.ProductRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -85,6 +86,10 @@ public class ProductServiceTest {
         Mockito.when(repository.findById(idNaoExistente)).thenReturn(Optional.empty());
         Mockito.when(repository.findById(dependentId)).thenReturn(Optional.of(product));
 
+
+        //Update
+        Mockito.when(repository.getReferenceById(idExistente)).thenReturn(product);
+        Mockito.doThrow(EntityNotFoundException.class).when(repository).getReferenceById(idNaoExistente);
     }
 
 
@@ -159,9 +164,28 @@ public class ProductServiceTest {
         Assertions.assertNotNull(result.getBody());
         Assertions.assertEquals(productDTO.getName(), result.getBody().getName());
 
+    }
+
+    @Test
+    public void updateShouldReturnProductDtoWhenExistId(){
+
+        ProductDTO result = service.update(idExistente, productDTO);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(idExistente, result.getId());
+        Mockito.verify(repository, Mockito.times(1)).save(product);
+
+
 
 
     }
 
+    @Test
+    public void updateShouldThrowReResourceNotFoundExceptionWhenIdNotExist(){
+
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> service.update(idNaoExistente,productDTO));
+
+
+    }
 
 }
