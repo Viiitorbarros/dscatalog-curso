@@ -12,7 +12,7 @@ public class Factory {
     public static Product createProduct(){
 
         Product product = new Product(1L, "Phone","God Phone", 800.0,"https://raw.githubusercontent.com/devsuperior/dscatalog", Instant.parse("2020-07-14T10:00:00Z"));
-        product.getCategories().add(new Category(2L, "Electronics"));
+        product.getCategories().add(createCategory());
         return product;
 
     }
@@ -23,6 +23,15 @@ public class Factory {
         return new  ProductDTO(product,product.getCategories());
 
     }
+
+    public static Category createCategory(){
+
+        Category categories = new Category(2L, "Electronics");
+        return categories;
+
+    }
+
+
 
 
 

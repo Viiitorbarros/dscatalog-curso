@@ -12,9 +12,12 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 
 @Service
@@ -45,10 +48,10 @@ public class ProductService {
    @Transactional(readOnly = true)
    public ResponseEntity<ProductDTO> findById(Long id){
 
-        Product Product = productRepository.findById(id)
+        Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Entidade Nao Encontrada "));
 
-        ProductDTO productDTO = new ProductDTO(Product, Product.getCategories());
+        ProductDTO productDTO = new ProductDTO(product, product.getCategories());
 
         return ResponseEntity.ok().body(productDTO);
 
@@ -64,7 +67,7 @@ public class ProductService {
 
         ProductDTO dto = new ProductDTO(entity);
 
-       return ResponseEntity.ok().body(dto);
+       return ResponseEntity.status(HttpStatus.CREATED).body(dto);
 
    }
 
