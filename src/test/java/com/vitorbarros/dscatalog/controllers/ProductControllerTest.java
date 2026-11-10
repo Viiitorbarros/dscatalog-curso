@@ -3,20 +3,15 @@ package com.vitorbarros.dscatalog.controllers;
 
 import com.vitorbarros.dscatalog.Factory.Factory;
 import com.vitorbarros.dscatalog.dto.ProductDTO;
+import com.vitorbarros.dscatalog.exeptions.DatabaseException;
 import com.vitorbarros.dscatalog.exeptions.ResourceNotFoundException;
-import com.vitorbarros.dscatalog.models.Product;
 import com.vitorbarros.dscatalog.service.ProductService;
-import org.h2.command.dml.MergeUsing;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -26,13 +21,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultHandler;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.client.HttpClientErrorException;
 import tools.jackson.databind.ObjectMapper;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.net.URI;
@@ -48,7 +45,9 @@ public class ProductControllerTest {
     private ProductDTO productDTO;
     private Long idExistente;
     private Long idNaoExistente;
+    private Long dependetId;
     private URI uri;
+    private ResultActions resultActions;
 
 
 
@@ -68,7 +67,67 @@ public class ProductControllerTest {
         page = new PageImpl<>(List.of(productDTO));
         idExistente = 1L;
         idNaoExistente = 1000L;
+        dependetId = 500L;
         uri = URI.create("/product/1");
+
+    }
+
+    @Test
+    public void deleteShouldReturnNotFoundWhenIdNoExist() throws Exception{
+        Mockito.doThrow(DatabaseException.class).when(service).delete(idNaoExistente);
+
+        resultActions = mockMvc.perform(delete("/product/{id}", idNaoExistente));
+
+
+        resultActions.andExpect(status().isBadRequest());
+
+
+    }
+
+    @Test
+    public void deleteShouldReturnDatabaseExceptionWhenDependentId(){
+
+    }
+
+    @Test
+    public void deleteShouldReturnOkWhenIdExist() throws  Exception{
+
+        resultActions = mockMvc.perform(delete("/product/{id}", idExistente));
+
+        resultActions.andExpect(status().isNoContent());
+    }
+
+
+    @Test
+    public void updateShouldReturnProductDtoWhenIdExist() throws Exception{
+
+        Mockito.when(service.update(eq(idExistente), any())).thenReturn(productDTO);
+
+        String jsonBody = objectMapper.writeValueAsString(productDTO);
+
+        resultActions = mockMvc.perform(put("/product/{id}", idExistente)
+                .content(jsonBody)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        resultActions.andExpect(status().isOk());
+        resultActions.andExpect(jsonPath("$.id").exists());
+        resultActions.andExpect(jsonPath("$.id").value(idExistente));
+
+
+    }
+
+    @Test
+    public void updateShouldReturnNotFoundWhenIdNotExist() throws Exception{
+
+        Mockito.when(service.update(eq(idNaoExistente), any())).thenThrow(ResourceNotFoundException.class);
+        String jsonBody = objectMapper.writeValueAsString(productDTO);
+
+        resultActions = mockMvc.perform(put("/product/{id}", idNaoExistente)
+                .content(jsonBody)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        resultActions.andExpect(status().isNotFound());
+        resultActions.andExpect(jsonPath("$.id").doesNotExist());
 
     }
 
@@ -89,7 +148,7 @@ public class ProductControllerTest {
         Mockito.when(service.findById(idNaoExistente)).thenThrow(ResourceNotFoundException.class);
 
 
-        ResultActions resultActions = mockMvc.perform(get("/product/{id}", idNaoExistente));
+        resultActions = mockMvc.perform(get("/product/{id}", idNaoExistente));
 
         resultActions.andExpect(status().isNotFound());
         resultActions.andExpect(jsonPath("$.id").doesNotExist());
@@ -114,10 +173,13 @@ public class ProductControllerTest {
 
         Mockito.when(service.save(any())).thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(productDTO));
 
-        mockMvc.perform(post("/product")
+        resultActions = mockMvc.perform(post("/product")
                          .content(jsonBody)
-                         .contentType(MediaType.APPLICATION_JSON))
-                 .andExpect(status().isCreated());
+                         .contentType(MediaType.APPLICATION_JSON));
+
+        resultActions.andExpect(status().isCreated());
+        resultActions.andExpect(jsonPath("$.id").exists());
+        resultActions.andExpect(jsonPath("$.id").value(idExistente));
 
     }
 }
