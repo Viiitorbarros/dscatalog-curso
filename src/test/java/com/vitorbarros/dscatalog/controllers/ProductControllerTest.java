@@ -85,12 +85,17 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void deleteShouldReturnDatabaseExceptionWhenDependentId(){
+    public void deleteShouldReturnDatabaseExceptionWhenDependentId() throws Exception{
+
+        Mockito.doThrow(DatabaseException.class).when(service).delete(dependetId);
+        resultActions = mockMvc.perform(delete("/product/{id}", dependetId));
+
+        resultActions.andExpect(status().isBadRequest());
 
     }
 
     @Test
-    public void deleteShouldReturnOkWhenIdExist() throws  Exception{
+    public void deleteShouldReturnIsNoContentWhenIdExist() throws  Exception{
 
         resultActions = mockMvc.perform(delete("/product/{id}", idExistente));
 
